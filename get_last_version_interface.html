@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Récupérer la dernière version validée</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Récupérer la dernière version validée</h1>
+        <form id="versionForm">
+            <label for="token">Token :</label>
+            <input type="text" id="token" name="token" required>
+
+            <button type="submit">Récupérer</button>
+        </form>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('versionForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const token = document.getElementById('token').value;
+
+            const response = await fetch('http://localhost/Option2/api_get_last_valid_version.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token })
+            });
+
+            const data = await response.json();
+
+            const resultDiv = document.getElementById('result');
+            if (response.ok) {
+                resultDiv.innerHTML = `
+                    <strong>Application :</strong><br>
+                    ID: ${data.application.idapplication}<br>
+                    Nom: ${data.application.nomapplication}<br>
+                    Description: ${data.application.description}<br><br>
+                    <strong>Dernière version validée :</strong><br>
+                    Version: ${data.last_valid_version.version}<br>
+                    Fichier: ${data.last_valid_version.filename}<br>
+                    Chemin: ${data.last_valid_version.filepath}
+                `;
+            } else {
+                resultDiv.innerHTML = `<strong>Erreur :</strong> ${data.error}`;
+            }
+        });
+    </script>
+</body>
+</html>

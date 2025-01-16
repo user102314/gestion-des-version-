@@ -1,0 +1,117 @@
+<?php
+// Connexion à la base de données
+$host = 'localhost';
+$dbname = 'file_upload';
+$username = 'root'; // Remplacez par votre nom d'utilisateur MySQL
+$password = ''; // Remplacez par votre mot de passe MySQL
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Erreur de connexion à la base de données : " . $e->getMessage());
+}
+
+$message = ''; // Variable pour stocker les messages de succès ou d'erreur
+
+// Traitement du formulaire d'upload
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
+    $file = $_FILES['file'];
+
+    // Vérifier si le fichier est valide
+    if ($file['error'] === UPLOAD_ERR_OK) {
+        $file_name = basename($file['name']);
+        $file_tmp = $file['tmp_name'];
+        $upload_dir = 'uploads/';
+
+        // Créer le dossier "uploads" s'il n'existe pas
+        if (!is_dir($upload_dir)) {
+            mkdir($upload_dir, 0755, true);
+        }
+
+        // Déplacer le fichier uploadé vers le dossier "uploads"
+        $file_path = $upload_dir . $file_name;
+        if (move_uploaded_file($file_tmp, $file_path)) {
+            // Enregistrer les informations du fichier dans la base de données
+            $stmt = $pdo->prepare("INSERT INTO files (file_name, file_path) VALUES (:file_name, :file_path)");
+            $stmt->execute([
+                ':file_name' => $file_name,
+                ':file_path' => $file_path
+            ]);
+
+            $message = "Fichier uploadé et enregistré avec succès !";
+        } else {
+            $message = "Erreur lors du déplacement du fichier.";
+        }
+    } else {
+        $message = "Erreur lors de l'upload du fichier.";
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload de Fichier</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .upload-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        .upload-container h2 {
+            color: #333;
+        }
+        .upload-container input[type="file"] {
+            margin: 10px 0;
+        }
+        .upload-container button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .upload-container button:hover {
+            background-color: #0056b3;
+        }
+        .message {
+            margin-top: 10px;
+            color: green;
+        }
+        .error {
+            margin-top: 10px;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="upload-container">
+        <h2>Uploader un Fichier</h2>
+        <form action="index.php" method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" required>
+            <button type="submit">Uploader</button>
+        </form>
+        <?php if (!empty($message)): ?>
+            <div class="<?php echo (strpos($message, 'Erreur') !== false) ? 'error' : 'message'; ?>">
+                <?php echo $message; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+</body>
+</html>
