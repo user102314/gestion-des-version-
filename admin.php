@@ -57,26 +57,30 @@ $morrisData = json_encode($morrisData);
                &nbsp; <a href="logout.php" class="btn btn-danger square-btn-adjust">Logout</a>
             </div>
         </nav>   
-
-        <!-- Barre de navigation latérale -->
         <nav class="navbar-default navbar-side" role="navigation">
-            <div class="sidebar-collapse">
-                <ul class="nav" id="main-menu">
-                    <li class="text-center">
-                        <img src="img/admin (2).png" class="user-image img-responsive"/>
-                    </li>
-                    <li>
-                        <a class="active-menu" href="admin.php"><i class="fa fa-table fa-3x"></i> Dashboard</a>
-                    </li>
-                    <li>
-                        <a href="users.php"><i class="fa fa-users fa-3x"></i> Utilisateurs</a>
-                    </li>
-                    <li>
-                        <a href="application.php"><i class="fa fa-users fa-3x"></i> Application</a>
-                    </li>
-                </ul>
-            </div>
-        </nav> 
+    <div class="sidebar-collapse">
+        <ul class="nav" id="main-menu">
+            <li class="text-center">
+                <img src="img/admin (2).png" class="user-image img-responsive"/>
+            </li>
+            <li>
+                <a class="active-menu"  href="admin.php"><i class="fa fa-dashboard fa-3x"></i> Dashboard</a>
+            </li>
+            <li>
+                <a href="users.php"><i class="fa fa-users fa-3x"></i> Utilisateurs</a>
+            </li>
+            <li>
+                <a href="application.php"><i class="fa fa-dashboard fa-3x"></i> Application</a>
+            </li>
+            <li>
+                <a href="controle.php"><i class="fa fa-check-circle fa-3x"></i> Controle</a>
+            </li>
+            <li>
+                <a href="logout.php"><i class="fa fa-sign-out fa-3x"></i> Se déconnecter</a>
+            </li>
+        </ul>
+    </div>
+</nav>
 
         <!-- Contenu principal -->
         <div id="page-wrapper">

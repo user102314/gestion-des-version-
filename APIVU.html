@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Interface</title>
+</head>
+<body>
+  <h1>Vérifier le token et récupérer les applications</h1>
+  <form id="verifyTokenForm">
+    <label for="token">Token :</label>
+    <input type="text" id="token" name="token" required>
+    <label for="adresse">Adresse :</label>
+    <input type="text" id="adresse" name="adresse">
+    <button type="submit">Vérifier</button>
+  </form>
+  <pre id="result"></pre>
+
+  <script>
+    document.getElementById('verifyTokenForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const token = document.getElementById('token').value;
+      const adresse = document.getElementById('adresse').value;
+
+      const response = await fetch('http://localhost:3000/verify-token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, adresse })
+      });
+
+      const data = await response.json();
+      document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+
+      // Afficher le lien de téléchargement si disponible
+      if (data.success && data.data.length > 0) {
+        data.data.forEach(app => {
+          if (app.downloadLink) {
+            const link = document.createElement('a');
+            link.href = app.downloadLink;
+            link.textContent = `Télécharger ${app.nomapplication} (${app.latestVersion.version})`;
+            link.style.display = 'block';
+            document.body.appendChild(link);
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html> 

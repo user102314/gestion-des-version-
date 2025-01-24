@@ -2,20 +2,17 @@
 session_start();
 require 'db.php';
 
-// Vérifier si l'utilisateur est connecté et est un administrateur
 if (!isset($_SESSION['iduser']) || $_SESSION['role'] != 1) {
     header('Location: login.php');
     exit();
 }
 
-// Récupérer l'ID de l'application à modifier depuis l'URL
 if (!isset($_GET['id'])) {
     header('Location: application.php');
     exit();
 }
 $idapplication = $_GET['id'];
 
-// Récupérer les informations de l'application
 $stmt = $conn->prepare("
     SELECT application.*, user.nep 
     FROM application 
@@ -30,17 +27,14 @@ if (!$application) {
     exit();
 }
 
-// Récupérer tous les utilisateurs pour la sélection dans le formulaire
 $stmt = $conn->query("SELECT iduser, nep FROM user");
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Traitement du formulaire de modification
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nomapplication = $_POST['nomapplication'];
     $description = $_POST['description'];
     $iduser = $_POST['iduser'];
 
-    // Mettre à jour l'application dans la base de données
     $stmt = $conn->prepare("
         UPDATE application 
         SET nomapplication = :nomapplication, description = :description, iduser = :iduser 
@@ -53,7 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'idapplication' => $idapplication
     ]);
 
-    // Rediriger vers la page de gestion des applications après la modification
     header('Location: application.php');
     exit();
 }
@@ -68,10 +61,85 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="assets/css/bootstrap.css" rel="stylesheet" />
     <link href="assets/css/font-awesome.css" rel="stylesheet" />
     <link href="assets/css/custom.css" rel="stylesheet" />
+    <style>
+        /* Style pour le contenu */
+        #page-wrapper {
+            padding: 20px;
+        }
+
+        #page-inner {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #8B0000;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-control {
+            border: 1px solid #8B0000;
+            border-radius: 5px;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-control:focus {
+            border-color: #6B0000;
+            box-shadow: 0 0 5px rgba(139, 0, 0, 0.5);
+        }
+
+        .btn {
+            margin: 5px;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #8B0000;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #6B0000;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body>
     <div id="wrapper">
-        <!-- Barre de navigation supérieure -->
+        <!-- Barre de navigation supérieure (inchangée) -->
         <nav class="navbar navbar-default navbar-cls-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
@@ -87,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </nav>   
 
-        <!-- Barre de navigation latérale -->
+        <!-- Barre de navigation latérale (inchangée) -->
         <nav class="navbar-default navbar-side" role="navigation">
             <div class="sidebar-collapse">
                 <ul class="nav" id="main-menu">
@@ -107,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </nav> 
 
-        <!-- Contenu principal -->
+        <!-- Contenu principal (modifié) -->
         <div id="page-wrapper">
             <div id="page-inner">
                 <h2>Modifier l'application</h2>
@@ -137,7 +205,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
-    <!-- Scripts JavaScript -->
+    <!-- Scripts JavaScript (inchangés) -->
     <script src="assets/js/jquery-1.10.2.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>
     <script src="assets/js/jquery.metisMenu.js"></script>

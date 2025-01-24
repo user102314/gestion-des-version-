@@ -122,26 +122,29 @@ if ($derniereDate) {
             </div>
         </nav>   
         <nav class="navbar-default navbar-side" role="navigation">
-            <div class="sidebar-collapse">
-                <ul class="nav" id="main-menu">
-                    <li class="text-center">
-                    <img src="img/user.png" class="user-image img-responsive"/>
-                    </li>
-                    <li>
-                        <a href="index.php"><i class="fa fa-table fa-3x"></i> Dashboard</a>
-                    </li>
-                    <li>
-                        <a class="active-menu" href="version.php"><i class="fa fa-desktop fa-3x"></i> Version</a>
-                    </li>  
-                    <li>
-                        <a href="addversion.php"><i class="fa fa-desktop fa-3x"></i>Add Version</a>
-                    </li>  
-                    <li>
-                        <a href="logout.php"><i class="fa fa-desktop fa-3x"></i> Se déconnecter</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>  
+    <div class="sidebar-collapse">
+        <ul class="nav" id="main-menu">
+            <li class="text-center">
+                <img src="img/user.png" class="user-image img-responsive"/>
+            </li>
+            <li>
+                <a  href="index.php"><i class="fa fa-tachometer fa-3x"></i> Dashboard</a>
+            </li>
+            <li>
+                <a class="active-menu" href="version.php"><i class="fa fa-code-fork fa-3x"></i> Version</a>
+            </li>   
+            <li>
+                <a href="addversion.php"><i class="fa fa-plus-circle fa-3x"></i> Add Version</a>
+            </li>  
+            <li>
+                <a href="notification.php"><i class="fa fa-bell fa-3x"></i> Notification</a>
+            </li> 
+            <li>
+                <a href="logout.php"><i class="fa fa-sign-out fa-3x"></i> Se déconnecter</a>
+            </li>
+        </ul>
+    </div>
+</nav>
 
         <div id="page-wrapper">
             <div id="page-inner">

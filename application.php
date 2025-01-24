@@ -2,13 +2,11 @@
 session_start();
 require 'db.php';
 
-// Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['iduser'])) {
     header('Location: login.php');
     exit();
 }
 
-// Récupérer toutes les applications avec les détails de l'utilisateur et la dernière version validée
 $stmt = $conn->query("
     SELECT 
         application.idapplication, 
@@ -30,7 +28,6 @@ $stmt = $conn->query("
 ");
 $applications = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Récupérer tous les utilisateurs pour la sélection dans la modale
 $stmt = $conn->query("SELECT iduser, nep FROM user");
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -44,6 +41,64 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link href="assets/css/bootstrap.css" rel="stylesheet" />
     <link href="assets/css/font-awesome.css" rel="stylesheet" />
     <link href="assets/css/custom.css" rel="stylesheet" />
+    <style>
+        /* Style pour le tableau */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .table th, .table td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        .table th {
+            background-color: #8B0000;
+            color: white;
+            font-weight: bold;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* Style pour les boutons */
+        .btn {
+            margin: 2px;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-primary:hover, .btn-danger:hover, .btn-success:hover {
+            opacity: 0.8;
+        }
+    </style>
 </head>
 <body>
     <div id="wrapper">
@@ -63,26 +118,30 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </nav>   
 
-        <!-- Barre de navigation latérale -->
         <nav class="navbar-default navbar-side" role="navigation">
-            <div class="sidebar-collapse">
-                <ul class="nav" id="main-menu">
-                    <li class="text-center">
-                    <img src="img/admin (2).png" class="user-image img-responsive"/>
-                    </li>
-                    <li>
-                        <a href="admin.php"><i class="fa fa-table fa-3x"></i> Dashboard</a>
-                    </li>
-                    <li>
-                        <a href="users.php"><i class="fa fa-users fa-3x"></i> Utilisateurs</a>
-                    </li>
-                    <li>
-                        <a class="active-menu" href="application.php"><i class="fa fa-users fa-3x"></i> Application</a>
-                    </li>
-                </ul>
-            </div>
-        </nav> 
-
+    <div class="sidebar-collapse">
+        <ul class="nav" id="main-menu">
+            <li class="text-center">
+                <img src="img/admin (2).png" class="user-image img-responsive"/>
+            </li>
+            <li>
+                <a href="admin.php"><i class="fa fa-dashboard fa-3x"></i> Dashboard</a>
+            </li>
+            <li>
+                <a href="users.php"><i class="fa fa-users fa-3x"></i> Utilisateurs</a>
+            </li>
+            <li>
+                <a class="active-menu"  href="application.php"><i class="fa fa-dashboard fa-3x"></i> Application</a>
+            </li>
+            <li>
+                <a href="controle.php"><i class="fa fa-check-circle fa-3x"></i> Controle</a>
+            </li>
+            <li>
+                <a href="logout.php"><i class="fa fa-sign-out fa-3x"></i> Se déconnecter</a>
+            </li>
+        </ul>
+    </div>
+</nav>
         <!-- Contenu principal -->
         <div id="page-wrapper">
             <div id="page-inner">
@@ -102,26 +161,24 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <!-- ... (code précédent inchangé) ... -->
-<tbody>
-    <?php foreach ($applications as $app): ?>
-        <tr>
-            <td><?= htmlspecialchars($app['idapplication']) ?></td>
-            <td><?= htmlspecialchars($app['nomapplication']) ?></td>
-            <td><?= htmlspecialchars($app['description']) ?></td>
-            <td><?= htmlspecialchars($app['nep']) ?></td>
-            <td><?= htmlspecialchars($app['last_valid_version']) ?></td>
-            <td>
-                <a href="edit_Aapplication.php?id=<?= $app['idapplication'] ?>" class="btn btn-primary">Modifier</a>
-                <a href="delete_application.php?id=<?= $app['idapplication'] ?>" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette application ?');">Supprimer</a>
-                <?php if (!empty($app['last_valid_version'])): ?>
-                    <a href="download_version.php?id=<?= $app['idapplication'] ?>" class="btn btn-success">Télécharger</a>
-                <?php endif; ?>
-            </td>
-        </tr>
-    <?php endforeach; ?>
-</tbody>
-<!-- ... (code suivant inchangé) ... -->
+                    <tbody>
+                        <?php foreach ($applications as $app): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($app['idapplication']) ?></td>
+                                <td><?= htmlspecialchars($app['nomapplication']) ?></td>
+                                <td><?= htmlspecialchars($app['description']) ?></td>
+                                <td><?= htmlspecialchars($app['nep']) ?></td>
+                                <td><?= htmlspecialchars($app['last_valid_version']) ?></td>
+                                <td>
+                                    <a href="edit_Aapplication.php?id=<?= $app['idapplication'] ?>" class="btn btn-primary">Modifier</a>
+                                    <a href="delete_application.php?id=<?= $app['idapplication'] ?>" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette application ?');">Supprimer</a>
+                                    <?php if (!empty($app['last_valid_version'])): ?>
+                                        <a href="download_version.php?id=<?= $app['idapplication'] ?>" class="btn btn-success">Télécharger</a>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
                 </table>
             </div>
         </div>
